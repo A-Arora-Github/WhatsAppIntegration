@@ -17,6 +17,10 @@ app.listen(port,()=>{
     console.log(`Listening to PORT number ${port}`);
 });
 
+app.get('/',(req,res)=>{
+    res.send({'status':'called root url get request'});
+});
+
 app.get('/getMessage',(req,res)=>{
     res.send({'connection':'success'});
 });
