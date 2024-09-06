@@ -1,24 +1,7 @@
-// const express = require("express");
+const express = require("express");
+const axios = require("axios");
 
-// const app = express();
-
-// app.get("/", (req, res) => {
-//   res.send("Express on Vercel");
-// });
-
-// app.listen(5000, () => {
-//   console.log("Running on port 5000.");
-// });
-
-// // Export the Express API
-// module.exports = app;
-
-
-const express = require('express');
-const axios = require('axios');
-// const bodyParser = require('body-parser');
 const app = express();
-const port = 3000;
 
 const WHATSAPP_PHONE_NUMBER_ID = '354266431113065';
 const ENDPOINT = `https://graph.facebook.com/v20.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
@@ -27,15 +10,12 @@ const ACCESS_TOKEN = 'EAAWEh2d9r1IBO797zYZCdE4B7Je7WY70TCkhe18i0O8LFGDF7hLSps1ys
 const MESSAGE_TEXT = `This is sample message text`;
 const MOBILE_NUMBERS = ['919179430062', '917000890062'];   //,'919582321892'];
 
+app.get("/", (req, res) => {
+  res.send("Express on Vercel");
+});
+
 // app.use(bodyParser.json());
 
-app.listen(port,()=>{
-    console.log(`Listening to PORT number ${port}`);
-});
-
-app.get('/',(req,res)=>{
-    res.send({'status':'called root url get request'});
-});
 
 app.get('/getMessage',(req,res)=>{
     res.send({'connection':'success'});
@@ -108,6 +88,9 @@ let sendMessage = async (message)=>{
     return response;
 }
 
+app.listen(5000, () => {
+  console.log("Running on port 5000.");
+});
 
-
+// Export the Express API
 module.exports = app;
