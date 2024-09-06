@@ -14,7 +14,7 @@ const ENDPOINT = `https://graph.facebook.com/v20.0/${WHATSAPP_PHONE_NUMBER_ID}/m
 const TEMP_ACCESS_TOKEN = 'EAAWEh2d9r1IBOZBScO8NHlQpdUjeSlzmX9rYuEYWG7GjnKJyeW5ism0Cl4Ix8NSNGVPvNxxe4I5dLYLxTdKq9et5hd17xZAhi0vWYVtxnkQguJJY91kLNdQFvbJeqx7kxXD5jZAf9Aki8ZANwVxAr3HpRhFGg1QMB4jOwUlMqMF2c8ZCb0WZByxZAqldeIYYRzYoOJqd5ecq5sZBklVH7BeF4odro0cZD';
 const ACCESS_TOKEN = 'EAAWEh2d9r1IBO797zYZCdE4B7Je7WY70TCkhe18i0O8LFGDF7hLSps1ysRbEZCb6doXAf5MJg8CfhSdNqaaDaHVORAMPuyZC2ZBzOfR42nYOFC99nZB6C0wmw3qOUiZB5fdC4x1ph35JhkeW80YUBXfn0FCzAlZBdzf9Ro3jjaaM7pzuwAA1NXGRvJDckpI3tPjS3ciyZCHds0f7jvNgaRYOCZBJz8JB9DYpVnaUMh78ZD';
 const MESSAGE_TEXT = `This is sample message text`;
-const MOBILE_NUMBERS = ['917000890062','919582321892'];
+const MOBILE_NUMBERS = ['917000890062'];
 
 
 app.get("/", (req, res) => {
@@ -37,14 +37,26 @@ app.post("/postMessage", async (req,res)=>{
     }
 });
 
+app.post("/postMessageTemplate", async (req,res)=>{
+    console.log(req.body);
+    let message = req?.body;
+    
+    if(message===undefined || message.KEY===undefined || message['KEY']!==KEY) res.send({status:400,error_message:'Unauthorized'})
+    else{
+        let response = await sendMessage(message,'template');    
+        if(response==='error') res.send({status:400,statusList:[]});
+        else res.send({status:200,statusList:response});
+    }
+});
 
-let sendMessage = async (message)=>{
+
+let sendMessage = async (message,messageType='text')=>{
     let response=[];
 
     console.log('in send message');
 
     await Promise.all(MOBILE_NUMBERS.map(async(number)=>{
-        let response2 = await sendMessageUtil(number,message);
+        let response2 = await sendMessageUtil(number,message,messageType);
         response.push(response2);
     }))
     .then(res=>{
@@ -60,7 +72,6 @@ let sendMessageUtil = async (to,message,messageType='text')=>{
     // console.log('in send message');
     let status;
 
-    let textBody = `Current Price - ${message['current price']}\nQuantity - ${message['QTY']}\nOrder Time - ${message['Order Time']}`;
     
     let headers = {
         'Content-Type':'application/json',
@@ -71,9 +82,14 @@ let sendMessageUtil = async (to,message,messageType='text')=>{
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
         "to": to,
-        "type": "text",
-        "text": {"preview_url": true, "body": textBody}
+        "type": messageType,
     }
+
+    if(messageType==='text'){
+        let textBody = `Current Price - ${message['current price']}\nQuantity - ${message['QTY']}\nOrder Time - ${message['Order Time']}`;
+        data['text'] = {"preview_url": true, "body": textBody};
+    }
+    else data['template'] = {"name": "hello_world", "language": { "code": "en_US"} };
 
     await axios.post(ENDPOINT, data, {
         headers: headers
