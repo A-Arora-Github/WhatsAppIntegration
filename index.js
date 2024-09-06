@@ -10,6 +10,10 @@ app.get("/getMessage", (req,res)=>{
     res.send({message:'Sucess'});
 })
 
+app.post("/postMessage", (req,res)=>{
+    res.send({message:'post message success'});
+})
+
 app.listen(5000, () => {
   console.log("Running on port 5000.");
 });
