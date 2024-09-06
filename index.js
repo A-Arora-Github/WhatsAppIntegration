@@ -1,14 +1,10 @@
 const express = require("express");
 const  cors = require("cors");
+const axios = require("axios");
 
 const app = express();
 
-const corsOptions ={
-    origin:'http://localhost:5173', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Express on Vercel");
