@@ -31,15 +31,12 @@ app.post("/api/postMessage", async (req,res)=>{
     let phoneNumberList = req?.body?.phoneNumberList;
     let messageType = req?.body?.messageType;
 
-    if(messageType!=='text' && messageType!=='template') res.send({status:404,data:'Message type can only be text and template'})
+    if(messageType!=='text' && messageType!=='template') res.send({status:404,data:'For now allowed message type can only be text or template'})
     else if(phoneNumberList===undefined || phoneNumberList.length<1) res.send({status:200,statusList:[]});
     else{
-        let response = await sendMessage(message,messageType,phoneNumberList);
-    
-        console.log(response);
-    
-        if(response==='error') res.send({status:'error'});
-        else res.send({statusList:response});
+        let response = await sendMessage(message,messageType,phoneNumberList);    
+        if(response==='error') res.send({status:400,statusList:[]});
+        else res.send({status:200,statusList:response});
     }
 });
 
@@ -79,7 +76,11 @@ let sendMessageUtil = async (to,message,messageType,)=>{
     }
 
     if(messageType==='text') data['text'] = {"preview_url": true, "body": message}
-    else if(messageType==='temaplate') data['template'] = {"name": "hello_world", "language": { "code": "en_US" } } 
+    else if(messageType==='template') data['template'] = {"name": "hello_world", "language": { "code": "en_US" } } 
+
+
+    console.log(data);
+
 
     await axios.post(ENDPOINT, data, {
         headers: headers
@@ -91,6 +92,7 @@ let sendMessageUtil = async (to,message,messageType,)=>{
     .catch((error) => {
         status = error.status
         console.log('in errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrror');
+        // console.log(error);
     });
 
     return status;
