@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 
@@ -11,7 +11,7 @@ const ACCESS_TOKEN = 'EAAWEh2d9r1IBO797zYZCdE4B7Je7WY70TCkhe18i0O8LFGDF7hLSps1ys
 const MESSAGE_TEXT = `This is sample message text`;
 const MOBILE_NUMBERS = ['919179430062', '917000890062'];   //,'919582321892'];
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
 app.listen(port,()=>{
     console.log(`Listening to PORT number ${port}`);
